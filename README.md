@@ -7,6 +7,9 @@ The BSH project aims to identify and map protein sequences from sequencing data.
    - An indexed protein database
    - Enzyme sequences
 
+
+
+# Detailed part 
 2. **Run BLAST** to search the protein database using the representative protein sequences.
 
 3. **Identify enzymes** in the BLAST results.
