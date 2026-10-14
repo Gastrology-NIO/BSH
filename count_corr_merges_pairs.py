@@ -109,33 +109,39 @@ def count_pearson_corr(metabolites):
             log_cpm = np.log2(cpm+1)
             #print(metabolites_list, genes_no_list)
             metabolites = np.array(metabolites_list, dtype=float)
+
             metabolites=np.log2(metabolites+1)
             correlation = spearmanr(metabolites, log_cpm)
             tests[(metabolite, gene_name)] = {"metabo_values": metabolites_list, "gene_values": genes_no_list,
                                                  "pval": correlation.pvalue, "corr_value": correlation.statistic}
-            if not np.isnan(correlation.pvalue):
-                p_val_list.append((gene_name, correlation.pvalue))
-            else:
-                print(correlation.pvalue)
-            print(correlation.pvalue)
+
+            p_val_list.append((gene_name, correlation.pvalue))
         #calculate_q_val
+
+        
         pvals = [i[1] for i in p_val_list]
         
         # usunięcie nanów
+        valid = []
         
+        for p, g in p_val_list:
+            try:
+                p = float(p)
+                if not np.isnan(p):
+                    valid.append((p, g))
+            except (ValueError, TypeError):
+                continue        
+        pvals_valid = [x[0] for x in valid]
         
-        #pvals_valid = [x[1] for x in valid
-        print(pvals)
-        if pvals:
-            reject, pvals_corrected, _, _ = multipletests(
-                pvals,
-                alpha=0.05,
-                method='fdr_bh'
-            )
+        reject, pvals_corrected, _, _ = multipletests(
+            pvals_valid,
+            alpha=0.05,
+            method='fdr_bh'
+        )
         
-            for e, (gene_name,p_val) in enumerate(p_val_list):
-                tests[(metabolite, gene_name)]["qval_value"] = pvals_corrected[e]
-                tests[(metabolite, gene_name)]["qval_significance"] = reject[e]
+        for e, (p_val, gene_name) in enumerate(valid):
+            tests[(metabolite, gene_name)]["qval_value"] = pvals_corrected[e]
+            tests[(metabolite, gene_name)]["qval_significance"] = reject[e]
 
             
 
@@ -155,6 +161,7 @@ def save_corr_stats(corr, out_file):
             f.write(str(datasets_data.get('qval_value', "nan")))
             f.write(";")
             f.write(str(datasets_data.get('qval_significance', "nan")))
+
             f.write(";")
             f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
             f.write(";")

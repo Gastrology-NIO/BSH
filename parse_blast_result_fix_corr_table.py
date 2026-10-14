@@ -114,7 +114,7 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                 if enzyme_proteins is None:
                     pass
                 else:
-                    #print(protein, protein in enzyme_proteins,enzyme_proteins)
+
                     if protein in enzyme_proteins:
                         pass
                     else:
@@ -348,7 +348,10 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
         with open(selected_proteins) as f:
             for l in f:
                 if not "Entry" in l:
-                    line=l.strip().split("\t")
+
+                    #line=l.strip().split("\t")
+
+                    line=l.strip().split("\n")
                     uniprot_acc=line[0]
                     enzyme_proteins.add(uniprot_acc)
     print("main taxids", main_taxids)
