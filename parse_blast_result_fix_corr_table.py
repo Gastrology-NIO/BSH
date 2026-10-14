@@ -98,7 +98,7 @@ def read_proteins_in_analyse(blast_table, all_proteins):
     return all_proteins
 
 
-def read_blast_result(blast_table, description, database_fasta_info, ncbi, result=None, main_taxids=None, representation_main_taxids=None):
+def read_blast_result(blast_table, description, database_fasta_info, ncbi, result=None, main_taxids=None, representation_main_taxids=None, enzyme_proteins=None):
     # 5857992;4123967_2       tr|E3ZSC8|E3ZSC8_LISSE  57.143  112     48      0       1       112     1       112     2.67e-45        145
     if result is None:
         result = {}
@@ -111,6 +111,15 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                 protein = line[1].split("|")[1]
                 pident = float(line[2])
                 eval = float(line[10])
+                if enzyme_proteins is None:
+                    pass
+                else:
+                    #print(protein, protein in enzyme_proteins,enzyme_proteins)
+                    if protein in enzyme_proteins:
+                        pass
+                    else:
+                        continue
+
                 # print(database_fasta_info[protein]['organism_taxid'])
                 if main_taxids:
 
@@ -246,7 +255,7 @@ def fix_corr(corr_info, blast_result, database_info, save_old_line=True):
                     line += f";{','.join([database_info[i]['organism_name'] for i in blast_result[cluster_no]['protein']])}"
                     line += f";{','.join([database_info[i]['organism_taxid'] for i in blast_result[cluster_no]['protein']])}"
                     if "representation" in blast_result[cluster_no]:
-                        line+=f";{'|'.join(list(set(blast_result[cluster_no]['representation'])))}"
+                        line+='"'+f";{'|'.join(list(set(blast_result[cluster_no]['representation'])))}"+'"'
 
                     if corr_data.ctrl is not None:
                         line += f";{corr_data.ctrl.corr}"
@@ -304,8 +313,10 @@ def save_corr(fixed_corr, out_file):
 @click.option('--fasta_databases', default="./", help='')
 @click.option('--out_file', default="./", help='Out file with genes statistics.')
 @click.option('--main_taxids', default="", help='Out file with genes statistics.')
+@click.option('--selected_proteins', default="", help='Out file with genes statistics.')
+
 @click.option('--alfa', default=0.05, help='Out file with genes statistics.')
-def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main_taxids, alfa):
+def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main_taxids,selected_proteins,  alfa):
     print("main taxids")
     main_taxids_representation={}
     if main_taxids:
@@ -327,11 +338,19 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
                                     
                         #print(padj_no, line, line[padj_no])
                             elif float(line[4].replace(',', '.'))< alfa:
-                                main_taxids_representation[int(line[1].replace("OTU", "").replace('"', ''))]=l.strip()
+                                main_taxids_representation[int(line[1].replace("OTU", "").replace('"', ''))]=l.strip().replace(",", ".").replace(";", ",")
                             
                                 tmp_ids.add(int(line[1].replace("OTU", "").replace('"', '')))
                                 print(tmp_ids)
         main_taxids = list(tmp_ids)
+    enzyme_proteins=set()
+    if selected_proteins:
+        with open(selected_proteins) as f:
+            for l in f:
+                if not "Entry" in l:
+                    line=l.strip().split("\t")
+                    uniprot_acc=line[0]
+                    enzyme_proteins.add(uniprot_acc)
     print("main taxids", main_taxids)
     blast_files = eval(blast_files)
     print("read corr")
@@ -359,7 +378,7 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
     for blast_table, description in blast_files.items():
         if blast_table:
             blast_result = read_blast_result(blast_table, description, database_fasta_info, ncbi, blast_result,
-                                             main_taxids, main_taxids_representation)
+                                             main_taxids, main_taxids_representation, enzyme_proteins)
     print("fix corr")
 
     fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info)

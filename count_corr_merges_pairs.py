@@ -2,8 +2,9 @@ import os
 
 import click
 import numpy as np
-from scipy.stats import pearsonr
-
+from scipy.stats import pearsonr, spearmanr
+from statsmodels.stats.multitest import multipletests
+import numpy as np
 
 def read_stats_file(count_genes_file):
     file_names = list()
@@ -91,6 +92,7 @@ def count_pearson_corr(metabolites):
         for gene_name, gene_no in metabolites[file]["genes"].items():
             genes_1[gene_name].append(gene_no)
     for metabolite, metabolites_sets in metabolites_sets.items():
+        p_val_list=[]
         for gene_name, gene_sets in genes_1.items():
             metabolites_list=[]
             genes_no_list=[]
@@ -98,10 +100,44 @@ def count_pearson_corr(metabolites):
                 if metabolites_sets[e] is not None and gene_no is not None:
                     metabolites_list.append(float(metabolites_sets[e]))
                     genes_no_list.append(float(gene_no))
+            # CPM
+            
+            cpm = [i* 1e6 for i in genes_no_list]
+            
+            # log2(CPM)
+            cpm = np.array(cpm, dtype=float)
+            log_cpm = np.log2(cpm+1)
             #print(metabolites_list, genes_no_list)
-            correlation = pearsonr(metabolites_list, genes_no_list)
+            metabolites = np.array(metabolites_list, dtype=float)
+            metabolites=np.log2(metabolites+1)
+            correlation = spearmanr(metabolites, log_cpm)
             tests[(metabolite, gene_name)] = {"metabo_values": metabolites_list, "gene_values": genes_no_list,
                                                  "pval": correlation.pvalue, "corr_value": correlation.statistic}
+            if not np.isnan(correlation.pvalue):
+                p_val_list.append((gene_name, correlation.pvalue))
+            else:
+                print(correlation.pvalue)
+            print(correlation.pvalue)
+        #calculate_q_val
+        pvals = [i[1] for i in p_val_list]
+        
+        # usunięcie nanów
+        
+        
+        #pvals_valid = [x[1] for x in valid
+        print(pvals)
+        if pvals:
+            reject, pvals_corrected, _, _ = multipletests(
+                pvals,
+                alpha=0.05,
+                method='fdr_bh'
+            )
+        
+            for e, (gene_name,p_val) in enumerate(p_val_list):
+                tests[(metabolite, gene_name)]["qval_value"] = pvals_corrected[e]
+                tests[(metabolite, gene_name)]["qval_significance"] = reject[e]
+
+            
 
     return tests
 
@@ -115,6 +151,10 @@ def save_corr_stats(corr, out_file):
             f.write(str(datasets_data['corr_value']))
             f.write(";")
             f.write(str(datasets_data['pval']))
+            f.write(";")
+            f.write(str(datasets_data.get('qval_value', "nan")))
+            f.write(";")
+            f.write(str(datasets_data.get('qval_significance', "nan")))
             f.write(";")
             f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
             f.write(";")
