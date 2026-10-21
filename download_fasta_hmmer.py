@@ -29,7 +29,7 @@ def identify_BSH(aligned_file, new_fasta_file):
   pass
 
 def read_uniprots_hmmer(file):
-  text=file.open().read()
+  text=open(file).read()
   return list(set([
       line.split("\t")[1]
       for line in text.strip().splitlines()[1:]
