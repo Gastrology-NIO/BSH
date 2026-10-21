@@ -20,7 +20,7 @@ def download_fasta_by_hmmer_res(uniprot_acc, output_file):
           except requests.RequestException as e:
               print(f"Błąd dla {acc}: {e}")
 
-    print(f"Zapisano sekwencje do pliku: {output_file}")
+  print(f"Zapisano sekwencje do pliku: {output_file}")
 
 def align_new_file(file, new_file):
   pass
