@@ -30,8 +30,33 @@ def align_new_file(fasta_file, mafft_file):
   os.system(command)
   
 def identify_BSH(aligned_file, new_fasta_file):
-  pass
+  important_positions={
+        2: "C",
+        18: "R",
+        21: "D",
+        (81, 82): "N", # często F, Y lub W
+        175: "N",
+        228: "R",
+    }
+  reference_sequence=""
+  
+def mutations_pva():
+  # https://www.uniprot.org/uniprotkb/Q6D291/entry
+    return {30: ("C", "S"), 
+            48: ("R", "H"),
+            51: ("D", "E"),
+            51: ("D", "N"),
+            52: ("W", "F"),
+            52: ("W", "I"),
+            116: ("W", "N"),
+            116: ("W", "Y"),
+            244: ("R", "L")
+           }
 
+def mutations_BSH():
+  return {2:("C", "A"), 
+         3: ("T", "A")}
+  
 def read_uniprots_hmmer(file):
   text=open(file).read()
   return list(set([
