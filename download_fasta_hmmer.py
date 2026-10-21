@@ -1,3 +1,5 @@
+import requests
+
 def download_fasta_by_hmmer_res(uniprot_acc, output_file):
   accessions = list(dict.fromkeys(uniprot_acc))
 
