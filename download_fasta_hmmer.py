@@ -65,24 +65,25 @@ def read_uniprots_hmmer(file):
       if line.strip()
   ]))
 def phy_to_msa(input_file, output_file):
-    with open(input_file, "r") as f:
-        lines = f.readlines()
-
-    # Pierwsza linia zawiera liczbę sekwencji i długość wyrównania
-    n_sequences, alignment_length = map(int, lines[0].split()[:2])
-
     sequences = {}
 
-    for line in lines[1:]:
-        parts = line.split()
-        if len(parts) >= 2:
+    with open(input_file, "r") as f:
+        for line in f:
+            parts = line.split()
+
+            if len(parts) < 2:
+                continue
+
             name = parts[0]
-            seq = "".join(parts[1:])
-            sequences[name] = sequences.get(name, "") + seq
+            fragment = "".join(parts[1:])
+
+            sequences[name] = sequences.get(name, "") + fragment
 
     with open(output_file, "w") as f:
         for name, seq in sequences.items():
-            f.write(f">{name}\n{seq}\n")
+            f.write(f"{name} {seq}\n")
+
+
 
 
 if __name__=="__main__":
