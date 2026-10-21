@@ -64,13 +64,35 @@ def read_uniprots_hmmer(file):
       for line in text.strip().splitlines()[1:]
       if line.strip()
   ]))
-  
-if __name__=="__main__":
-  hmmer_tsv_file = "all_hmmer_results1.tsv"
-  fasta_files="all_hmmer_sequences.csv"
-  align_file="mafft_all_hmmer.aln"
-  # uniprots = read_uniprots_hmmer(hmmer_tsv_file)  
-  # fasta=download_fasta_by_hmmer_res(uniprots, fasta_files)
+def phy_to_msa(input_file, output_file):
+    with open(input_file, "r") as f:
+        lines = f.readlines()
 
-  align_new_file(fasta_files, align_file)
-  # identify_BSH(aligned_file, new_fasta_file)
+    # Pierwsza linia zawiera liczbę sekwencji i długość wyrównania
+    n_sequences, alignment_length = map(int, lines[0].split()[:2])
+
+    sequences = {}
+
+    for line in lines[1:]:
+        parts = line.split()
+        if len(parts) >= 2:
+            name = parts[0]
+            seq = "".join(parts[1:])
+            sequences[name] = sequences.get(name, "") + seq
+
+    with open(output_file, "w") as f:
+        for name, seq in sequences.items():
+            f.write(f">{name}\n{seq}\n")
+
+
+phy_to_msa("alignment.phy", "alignment.fasta")
+if __name__=="__main__":
+  phy_to_msa("phylip.txt", "long_phylip.txt")
+  # hmmer_tsv_file = "all_hmmer_results1.tsv"
+  # fasta_files="all_hmmer_sequences.csv"
+  # align_file="mafft_all_hmmer.aln"
+  # # uniprots = read_uniprots_hmmer(hmmer_tsv_file)  
+  # # fasta=download_fasta_by_hmmer_res(uniprots, fasta_files)
+
+  # align_new_file(fasta_files, align_file)
+  # # identify_BSH(aligned_file, new_fasta_file)
