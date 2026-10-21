@@ -64,24 +64,49 @@ def read_uniprots_hmmer(file):
       for line in text.strip().splitlines()[1:]
       if line.strip()
   ]))
+
+
 def phy_to_msa(input_file, output_file):
     sequences = {}
+    names = []
+    current_index = 0
 
     with open(input_file, "r") as f:
-        for line in f:
-            parts = line.split()
+        lines = f.readlines()
 
-            if len(parts) < 2:
-                continue
+    # Pomijamy nagłówek PHYLIP: liczba sekwencji i długość
+    lines = lines[1:]
 
+    for line in lines:
+        parts = line.split()
+
+        if not parts:
+            current_index = 0
+            continue
+
+        # Linia zawiera nazwę i fragment sekwencji
+        if len(parts) >= 2 and not all(c in "-." for c in parts[0]):
             name = parts[0]
             fragment = "".join(parts[1:])
 
-            sequences[name] = sequences.get(name, "") + fragment
+            # Nowa sekwencja lub kolejny blok z nazwami
+            if name not in sequences:
+                sequences[name] = ""
+                names.append(name)
+
+            sequences[name] += fragment
+            current_index += 1
+
+        else:
+            # Blok bez nazw: przypisujemy fragment do kolejnej sekwencji
+            fragment = "".join(parts)
+            if current_index < len(names):
+                sequences[names[current_index]] += fragment
+                current_index += 1
 
     with open(output_file, "w") as f:
-        for name, seq in sequences.items():
-            f.write(f"{name} {seq}\n")
+        for name in names:
+            f.write(f"{name} {sequences[name]}\n")
 
 
 
