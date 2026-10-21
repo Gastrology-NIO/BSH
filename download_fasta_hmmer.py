@@ -85,7 +85,6 @@ def phy_to_msa(input_file, output_file):
             f.write(f">{name}\n{seq}\n")
 
 
-phy_to_msa("alignment.phy", "alignment.fasta")
 if __name__=="__main__":
   phy_to_msa("phylip.txt", "long_phylip.txt")
   # hmmer_tsv_file = "all_hmmer_results1.tsv"
