@@ -268,7 +268,7 @@ def fix_corr(corr_info, blast_result, database_info, save_old_line=True, best_sc
                     if "representation" in blast_result[cluster_no]:
                         line+='"'+f";{'|'.join(list(set(blast_result[cluster_no]['representation'])))}"+'"'
                     if best_scores_hmmer is not None:
-                        line += f";{','.join([best_scores_hmmer[i] for i in blast_result[cluster_no]['protein']])}"
+                        line += f";{','.join([str(best_scores_hmmer[i]) for i in blast_result[cluster_no]['protein']])}"
 
                     if corr_data.ctrl is not None:
                         line += f";{corr_data.ctrl.corr}"
