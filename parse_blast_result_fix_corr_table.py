@@ -160,35 +160,38 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                 else:
                     print("without tax")
                     try:
-                        lineage = ncbi.get_lineage(database_fasta_info[protein]['organism_taxid'])
-                        if 2759 not in lineage:
+                        if protein in database_fasta_info:
+                            lineage = ncbi.get_lineage(database_fasta_info[protein]['organism_taxid'])
+                            if 2759 not in lineage:
+                                if cl_no in result:
+                                    if result[cl_no]["pident"] < pident:
+                                        result[cl_no]["pident"] = pident
+                                        result[cl_no]["protein"] = [protein]
+                                        result[cl_no]["description"] = [description]
+                                        result[cl_no]["blast_table"] = [blast_table]
+                                        result[cl_no]["eval"] = [eval]
+                                    if result[cl_no]["pident"] == pident:
+                                        if protein not in result[cl_no]["protein"]:
+                                            result[cl_no]["protein"].append(protein)
+                                            result[cl_no]["description"].append(description)
+                                            result[cl_no]["blast_table"].append(blast_table)
+                                            result[cl_no]["eval"].append(eval)
+                                else:
+                                    result[cl_no] = {"pident": pident, "protein": [protein], "description": [description],
+                                                     "blast_table": [blast_table], "eval": [eval]}
+                    except Exception as e:
+                        print(e)
+                        if protein in database_fasta_info:
+    
                             if cl_no in result:
                                 if result[cl_no]["pident"] < pident:
                                     result[cl_no]["pident"] = pident
                                     result[cl_no]["protein"] = [protein]
                                     result[cl_no]["description"] = [description]
                                     result[cl_no]["blast_table"] = [blast_table]
-                                    result[cl_no]["eval"] = [eval]
-                                if result[cl_no]["pident"] == pident:
-                                    if protein not in result[cl_no]["protein"]:
-                                        result[cl_no]["protein"].append(protein)
-                                        result[cl_no]["description"].append(description)
-                                        result[cl_no]["blast_table"].append(blast_table)
-                                        result[cl_no]["eval"].append(eval)
                             else:
                                 result[cl_no] = {"pident": pident, "protein": [protein], "description": [description],
-                                                 "blast_table": [blast_table], "eval": [eval]}
-                    except Exception as e:
-                        print(e)
-                        if cl_no in result:
-                            if result[cl_no]["pident"] < pident:
-                                result[cl_no]["pident"] = pident
-                                result[cl_no]["protein"] = [protein]
-                                result[cl_no]["description"] = [description]
-                                result[cl_no]["blast_table"] = [blast_table]
-                        else:
-                            result[cl_no] = {"pident": pident, "protein": [protein], "description": [description],
-                                             "blast_table": [blast_table]}
+                                                 "blast_table": [blast_table]}
     return result
 
 
