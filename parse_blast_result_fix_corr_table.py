@@ -330,8 +330,7 @@ def read_hmmer_tsv(file):
                 if l.strip():
                     protein = line[1]
                     score = line[6]
-                    print(line)
-                    input()
+
                     if protein not in result:
                         result[protein]=float(score)
                     else:
@@ -422,6 +421,7 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
         fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info)
     else:
         best_scores_hmmer=read_hmmer_tsv(hmmer_tsv)
+        print(best_scores_hmmer)
         fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info, best_scores_hmmer=best_scores_hmmer)
     save_corr(fixed_corr, out_file)
 
