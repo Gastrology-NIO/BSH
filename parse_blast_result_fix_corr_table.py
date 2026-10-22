@@ -49,8 +49,8 @@ def read_corr(corr_file):
                         result[cluster_no][metabolite] = set()
                     result[cluster_no][metabolite].add(
                         CorrInfo(line=line.strip(), metabolite=data[0], cluster=data[1], pval=float(data[3]),
-                                 corr=float(data[2]), pair=data[2], metabo_values_list=data[4],
-                                 gene_values_list=data[5]))
+                                 corr=float(data[2]), pair=data[2], metabo_values_list=data[6],
+                                 gene_values_list=data[7]))
     return result
 
 
@@ -93,13 +93,15 @@ def read_proteins_in_analyse(blast_table, all_proteins):
             if line:
                 line = line.split()
                 cl_no = line[0].split(";")[0]
-                protein = line[1].split("|")[1]
+                protein = line[1].split("_")[0]
                 all_proteins.add(protein)
     return all_proteins
 
 
 def read_blast_result(blast_table, description, database_fasta_info, ncbi, result=None, main_taxids=None, representation_main_taxids=None, enzyme_proteins=None):
     # 5857992;4123967_2       tr|E3ZSC8|E3ZSC8_LISSE  57.143  112     48      0       1       112     1       112     2.67e-45        145
+    # 2712365;4750170_2       A0A2K8V8T9_9FLAO        34.688  369     226     5       34      391     6       370     2.22e-75        237
+
     if result is None:
         result = {}
     with open(blast_table) as f:
@@ -108,7 +110,7 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
             if line:
                 line = line.split()
                 cl_no = line[0].split(";")[0]
-                protein = line[1].split("|")[1]
+                protein = line[1].split("_")[0]
                 pident = float(line[2])
                 eval = float(line[10])
                 if enzyme_proteins is None:
