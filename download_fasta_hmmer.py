@@ -124,7 +124,7 @@ if __name__=="__main__":
   uniprots = read_uniprots_hmmer(hmmer_tsv_file)  
   fasta=download_fasta_by_hmmer_res(uniprots, fasta_files)
   
-  uniprots 2= read_uniprots_hmmer(hmmer_tsv_file2)  
+  uniprots2= read_uniprots_hmmer(hmmer_tsv_file2)  
   fasta=download_fasta_by_hmmer_res(uniprots2, fasta_files2)
   
   # align_new_file(fasta_files, align_file)
