@@ -379,7 +379,7 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
     ncbi = NCBITaxa()
     # ncbi.update_taxonomy_database()
     print("read blast results")
-
+    print(blast_files)
     for blast_table, description in blast_files.items():
         if blast_table:
             blast_result = read_blast_result(blast_table, description, database_fasta_info, ncbi, blast_result,
