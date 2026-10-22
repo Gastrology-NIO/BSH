@@ -325,16 +325,17 @@ def read_hmmer_tsv(file):
     with open(file) as f:
         for l in f.readlines():
             if "Target Name" not in l:
-                line = l.split()
+                line = l.strip()
 
-                if l.strip():
+                if line:
+                    line=line.strip()
                     protein = line[1]
                     score = line[6]
 
                     if protein not in result:
                         result[protein]=float(score)
                     else:
-                        result[protein]=max(score)
+                        result[protein]=max([result[protein], float(score)])
     return result
         
 
