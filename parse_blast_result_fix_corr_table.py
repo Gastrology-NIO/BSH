@@ -326,9 +326,8 @@ def read_hmmer_tsv(file):
         for l in f.readlines():
             if "Target Name" not in l:
                 line = l.strip()
-
                 if line:
-                    line=line.strip()
+                    line=line.split()
                     protein = line[1]
                     score = line[6]
 
