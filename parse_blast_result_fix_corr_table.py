@@ -384,6 +384,7 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
         if blast_table:
             blast_result = read_blast_result(blast_table, description, database_fasta_info, ncbi, blast_result,
                                              main_taxids, main_taxids_representation, enzyme_proteins)
+    print(blast_result)
     print("fix corr")
 
     fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info)
