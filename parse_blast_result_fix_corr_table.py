@@ -109,7 +109,7 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
             line = l.strip()
             if line:
                 line = line.split()
-                print(line)
+                print("read_blast_result", line)
                 cl_no = line[0].split(";")[0]
                 protein = line[1].split("_")[0]
                 pident = float(line[2])
