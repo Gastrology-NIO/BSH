@@ -155,6 +155,7 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                                                                                          "blast_table": [blast_table], "eval": [eval], 
                                             "representation":[representation_main_taxids[list(set(lineage).intersection(set(main_taxids)))[0]]]}
                 else:
+                    print("without tax")
                     try:
                         lineage = ncbi.get_lineage(database_fasta_info[protein]['organism_taxid'])
                         if 2759 not in lineage:
@@ -174,7 +175,8 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                             else:
                                 result[cl_no] = {"pident": pident, "protein": [protein], "description": [description],
                                                  "blast_table": [blast_table], "eval": [eval]}
-                    except:
+                    Except Exception as e:
+                        print(e)
                         if cl_no in result:
                             if result[cl_no]["pident"] < pident:
                                 result[cl_no]["pident"] = pident
