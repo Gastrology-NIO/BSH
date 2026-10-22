@@ -125,7 +125,7 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
 
                 # print(database_fasta_info[protein]['organism_taxid'])
                 if main_taxids:
-                    print(main_taxids)
+                    print("main_taxids")
 
                     lineage =ncbi.get_lineage(database_fasta_info[protein]['organism_taxid'])
                     print("protein info", protein, database_fasta_info[protein]['organism_taxid'], database_fasta_info[protein]['organism_taxid'] in main_taxids, lineage, set(lineage).intersection(set(main_taxids)))
