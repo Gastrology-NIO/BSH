@@ -175,7 +175,7 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                             else:
                                 result[cl_no] = {"pident": pident, "protein": [protein], "description": [description],
                                                  "blast_table": [blast_table], "eval": [eval]}
-                    Except Exception as e:
+                    except Exception as e:
                         print(e)
                         if cl_no in result:
                             if result[cl_no]["pident"] < pident:
