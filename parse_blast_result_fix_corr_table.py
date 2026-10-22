@@ -246,7 +246,7 @@ def independent_corr(xy, ab, n, n2=None, twotailed=True, conf_level=0.95, method
         return lower, upper
 
 
-def fix_corr(corr_info, blast_result, database_info, save_old_line=True):
+def fix_corr(corr_info, blast_result, database_info, save_old_line=True, best_scores_hmmer=None):
     for cluster_no, metabolit_relation in corr_info.items():
         for metabolite, metabolite_cl_data in metabolit_relation.items():
             for corr_data in metabolite_cl_data:
@@ -267,6 +267,8 @@ def fix_corr(corr_info, blast_result, database_info, save_old_line=True):
                     line += f";{','.join([database_info[i]['organism_taxid'] for i in blast_result[cluster_no]['protein']])}"
                     if "representation" in blast_result[cluster_no]:
                         line+='"'+f";{'|'.join(list(set(blast_result[cluster_no]['representation'])))}"+'"'
+                    if best_scores_hmmer is not None:
+                        line += f";{','.join([best_scores_hmmer[i] for i in blast_result[cluster_no]['protein']])}"
 
                     if corr_data.ctrl is not None:
                         line += f";{corr_data.ctrl.corr}"
@@ -286,6 +288,9 @@ def fix_corr(corr_info, blast_result, database_info, save_old_line=True):
                     line += f";"
                     line += f";"
                     line += f";"
+                    if best_scores_hmmer is not None:
+                        line += f";"
+                        
                     if corr_data.ctrl is not None:
                         line += f";{corr_data.ctrl.corr}"
                         line += f";{corr_data.ctrl.pval}"
@@ -315,7 +320,22 @@ def save_corr(fixed_corr, out_file):
     #                 else:
     #                     f.write(corr_data.line)
     #                     f.write("\n")
+def read_hmmer_tsv(file):
+    result={}
+    with open(file) as f:
+        for l in f.readlines():
+            if "Target Name" not in l:
+                line = l.split()
 
+                if line.strip():
+                    protein = line[1]
+                    score = line[6]
+                    if protein not in result:
+                        result[protein]=float(score)
+                    else:
+                        result[protein]=max(score)
+    return result
+        
 
 @click.command()
 @click.option('--corr_file', default="./", help='Folder with BLAST files.')
@@ -325,9 +345,10 @@ def save_corr(fixed_corr, out_file):
 @click.option('--out_file', default="./", help='Out file with genes statistics.')
 @click.option('--main_taxids', default="", help='Out file with genes statistics.')
 @click.option('--selected_proteins', default="", help='Out file with genes statistics.')
+@click.option('--hmmer_tsv', default="", help='Out file with genes statistics.')
 
 @click.option('--alfa', default=0.05, help='Out file with genes statistics.')
-def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main_taxids,selected_proteins,  alfa):
+def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main_taxids, selected_proteins, hmmer_tsv, alfa):
     print("main taxids")
     main_taxids_representation={}
     if main_taxids:
@@ -395,10 +416,12 @@ def main(corr_file, corr_ctrl_file, blast_files, fasta_databases, out_file, main
                                              main_taxids, main_taxids_representation, enzyme_proteins)
     print(blast_result)
     print("fix corr")
-
-    fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info)
+    if hmmer_tsv is None:
+        fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info)
+    else:
+        best_scores_hmmer=read_hmmer_tsv(hmmer_tsv)
+        fixed_corr = fix_corr(corr_info, blast_result, database_fasta_info, best_scores_hmmer=best_scores_hmmer)
     save_corr(fixed_corr, out_file)
-
 
 if __name__ == '__main__':
     main()
