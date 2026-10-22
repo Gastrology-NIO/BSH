@@ -330,6 +330,7 @@ def read_hmmer_tsv(file):
                 if l.strip():
                     protein = line[1]
                     score = line[6]
+                    print(line)
                     if protein not in result:
                         result[protein]=float(score)
                     else:
