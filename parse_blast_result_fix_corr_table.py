@@ -114,7 +114,9 @@ def read_blast_result(blast_table, description, database_fasta_info, ncbi, resul
                 protein = line[1].split("_")[0]
                 pident = float(line[2])
                 eval = float(line[10])
-                if enzyme_proteins is None:
+                if enzyme_proteins in None:
+                    pass
+                elif len(enzyme_proteins)==0:
                     pass
                 else:
 
