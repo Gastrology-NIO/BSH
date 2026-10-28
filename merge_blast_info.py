@@ -27,7 +27,19 @@ import pandas as pd
 # >   -evalue 0.01 \
 # >   -qcov_hsp_perc 90
 
-# 
+# qseqid – Query sequence ID.
+# sseqid – Subject protein ID.
+# pident – Percentage of identical amino acids.
+# ppos – Percentage of positive-scoring amino acid substitutions.
+# length – Alignment length.
+# evalue – Statistical significance of the alignment.
+# bitscore – Bit score representing the strength of the alignment.
+# qlen – Length of the query sequence.
+# slen – Length of the subject protein.
+# qcovs – Percentage of the query sequence covered by the alignment.
+
+
+
 columns = [
     "qseqid", "sseqid", "pident", "ppos", "length",
     "mismatch", "gapopen", "qstart", "qend",
