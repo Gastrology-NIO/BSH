@@ -1,15 +1,43 @@
 import pandas as pd
+# blastp \                                                                                                            >   -db ./databases/trembl/uniprot_trembl.fasta \
+# >   -out ./blast_results/uniprot_trembl_eval_0_01_hsp_perc_90 \
+# >   -query ./clusters_representatives_for_corr_merged_pairs.fasta \
+# >   -num_threads 10 \
+# >   -outfmt "6 qseqid sseqid pident ppos length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen qcovs qseq sseq" \
+# >   -evalue 0.01 \
+# >   -qcov_hsp_perc 90
 
+# blastp \
+# >   -db ./databases/hmmer_bsh.fa \
+# >   -out ./blast_results/hmmer_bsh_eval_0_01_hsp_perc_90 \
+# >   -query ./clusters_representatives_for_corr_merged_pairs.fasta \
+# >   -num_threads 10 \
+# >   -outfmt "6 qseqid sseqid pident ppos length mismatch gapopen qstart qend sstart send evalue bitsco
+# re qlen slen qcovs qseq sseq" \
+# >   -evalue 0.01 \
+# >   -qcov_hsp_perc 90
+
+# blastp \
+# >   -db ./databases/hmmer_pav.fa \
+# >   -out ./blast_results/hmmer_pav_eval_0_01_hsp_perc_90 \
+# >   -query ./clusters_representatives_for_corr_merged_pairs.fasta \
+# >   -num_threads 10 \
+# >   -outfmt "6 qseqid sseqid pident ppos length mismatch gapopen qstart qend sstart send evalue bitsco
+# re qlen slen qcovs qseq sseq" \
+# >   -evalue 0.01 \
+# >   -qcov_hsp_perc 90
+
+# 
 columns = [
-    "qseqid", "sseqid", "pident", "length",
+    "qseqid", "sseqid", "pident", "ppos", "length",
     "mismatch", "gapopen", "qstart", "qend",
     "sstart", "send", "evalue", "bitscore"
 ]
 
 files = {
-    "A": "./blast_results/set_A.tsv",
-    "B": "./blast_results/set_B.tsv",
-    "C": "./blast_results/set_C.tsv",
+    "PAV": "./blast_results/hmmer_pav_eval_0_01_hsp_perc_90.tsv",
+    "BSH": "./blast_results/hmmer_bsh_eval_0_01_hsp_perc_90.tsv",
+    "uniprot": "./blast_results/uniprot_trembl_eval_0_01_hsp_perc_90",
 }
 
 # Wczytanie wyników
