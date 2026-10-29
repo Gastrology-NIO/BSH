@@ -47,8 +47,8 @@ columns = [
 ]
 
 files = {
-    "PAV": "./blast_results/hmmer_pav_eval_0_01_hsp_perc_90.tsv",
-    "BSH": "./blast_results/hmmer_bsh_eval_0_01_hsp_perc_90.tsv",
+    "PAV": "./blast_results/hmmer_pav_eval_0_01_hsp_perc_90",
+    "BSH": "./blast_results/hmmer_bsh_eval_0_01_hsp_perc_90",
     "uniprot": "./blast_results/uniprot_trembl_eval_0_01_hsp_perc_90",
 }
 
