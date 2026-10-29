@@ -57,6 +57,7 @@ dfs = []
 
 for dataset, filename in files.items():
     df = pd.read_csv(filename, sep=r"\s+", names=columns)
+    print(df)
 
     # Konwersja bitscore na wartości liczbowe
     df["bitscore"] = pd.to_numeric(df["bitscore"], errors="coerce")
