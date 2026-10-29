@@ -57,8 +57,16 @@ dfs = []
 
 for dataset, filename in files.items():
     df = pd.read_csv(filename, sep="\t", names=columns)
+
+    # Konwersja bitscore na wartości liczbowe
+    df["bitscore"] = pd.to_numeric(df["bitscore"], errors="coerce")
+
+    # Usunięcie wierszy bez poprawnego bitscore
+    df = df.dropna(subset=["bitscore"])
+
     df["dataset"] = dataset
     dfs.append(df)
+print(df)
 
 # Połączenie wszystkich zestawów
 df = pd.concat(dfs, ignore_index=True)
