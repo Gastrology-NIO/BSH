@@ -39,13 +39,6 @@ import pandas as pd
 # qcovs – Percentage of the query sequence covered by the alignment.
 
 
-
-columns = [
-    "qseqid", "sseqid", "pident", "ppos", "length",
-    "mismatch", "gapopen", "qstart", "qend",
-    "sstart", "send", "evalue", "bitscore"
-]
-
 files = {
     "PAV": "./blast_results/hmmer_pav_eval_0_01_hsp_perc_90",
     "BSH": "./blast_results/hmmer_bsh_eval_0_01_hsp_perc_90",
@@ -55,15 +48,28 @@ files = {
 # Wczytanie wyników
 dfs = []
 
+columns = [
+    "qseqid", "sseqid", "pident", "ppos", "length",
+    "mismatch", "gapopen", "qstart", "qend",
+    "sstart", "send", "evalue", "bitscore",
+    "qlen", "slen", "qcovs", "qseq", "sseq"
+]
+
+dfs = []
+
 for dataset, filename in files.items():
-    df = pd.read_csv(filename, sep=r"\s+", names=columns)
-    print(df)
+    df = pd.read_csv(
+        filename,
+        sep="\t",
+        names=columns,
+        header=None
+    )
 
-    # Konwersja bitscore na wartości liczbowe
+    print(dataset, df.shape)
+    print(df[["qseqid", "sseqid", "evalue", "bitscore"]].head())
+
     df["bitscore"] = pd.to_numeric(df["bitscore"], errors="coerce")
-
-    # Usunięcie wierszy bez poprawnego bitscore
-    df = df.dropna(subset=["bitscore"])
+    df["evalue"] = pd.to_numeric(df["evalue"], errors="coerce")
 
     df["dataset"] = dataset
     dfs.append(df)
