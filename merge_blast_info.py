@@ -37,6 +37,24 @@ import pandas as pd
 # qlen – Length of the query sequence.
 # slen – Length of the subject protein.
 # qcovs – Percentage of the query sequence covered by the alignment.
+mafft --auto --thread 10 \
+    bsh.fasta \
+    > bsh_alignment.fasta
+
+mafft --auto --thread 10 \
+    pav.fasta \
+    > pav_alignment.fasta
+
+hmmbuild bsh_family.hmm bsh_alignment.fasta
+hmmbuild pav_family.hmm pav_alignment.fasta
+
+hmmsearch \
+    --cpu 10 \
+    -E 0.01 \
+    --tblout bsh_hmmsearch.tsv \
+    bsh_family.hmm \
+    ./databases/trembl/uniprot_trembl.fasta \
+    > bsh_hmmsearch.log
 
 
 files = {
