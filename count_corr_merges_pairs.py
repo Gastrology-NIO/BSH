@@ -30,8 +30,8 @@ def read_cluser_mapping_to_uniprot(file_mapping):
             if "qseqid" not in line and line.strip():
                 split_line=line.split()
                 cluster_name=split_line[0].split(";")[0]
-                family=split_line[-2]
-                assigned_protein_id=split_line[-1]
+                family=split_line[-4]
+                assigned_protein_id=split_line[-3]
                 if "|" in assigned_protein_id:
                     assigned_protein_id=assigned_protein_id.split("|")[1]
                 if assigned_protein_id not in result:
