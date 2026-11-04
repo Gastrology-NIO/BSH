@@ -194,7 +194,8 @@ def count_pearson_corr(metabolites):
 
 def get_protein_info(proteins_ids):
     uniprot_accs=proteins_ids.keys()
-    
+    url = "https://rest.uniprot.org/uniprotkb/search"
+
     params = {
         "query": "accession:(" + " OR ".join(list(uniprot_accs)) + ")",
         "format": "tsv",
