@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 import re
@@ -14,7 +13,7 @@ files = {
 }
 
 pav_file = "./pav.tsv"
-bsh_file = "./bsh.tsv"
+bsh_file = "./bsh_hmmsearch_converted.tsv"
 
 columns = [
     "qseqid", "sseqid", "pident", "ppos", "length",
