@@ -187,7 +187,7 @@ def count_pearson_corr(metabolites):
 
 def save_corr_stats(corr, out_file, clusters_info):
     with open(out_file, "w") as f:
-        f.write("metabolite;gene_name;corr_value;pval;metabo_list_values;gene_list_percentages\n")
+        f.write("metabolite;gene_name;corr_value;pval;metabo_list_values;gene_list_percentages;representative protein name;similar gene clusters\n")
         for datasets_info, datasets_data in corr.items():
             f.write(';'.join([str(i) for i in list(datasets_info)]))
             f.write(";")
