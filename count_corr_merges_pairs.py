@@ -176,6 +176,9 @@ def count_pearson_corr(metabolites):
         )
         
         for e, (p_val, gene_name) in enumerate(valid):
+            print(tests[(metabolite, gene_name)])
+            print(pvals_corrected[e])
+            print( reject[e])
             tests[(metabolite, gene_name)]["qval_value"] = pvals_corrected[e]
             tests[(metabolite, gene_name)]["qval_significance"] = reject[e]
 
