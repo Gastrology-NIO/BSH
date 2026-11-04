@@ -17,13 +17,48 @@ def read_stats_file(count_genes_file):
                     stats = {i: {} for i in file_names}
                 else:
                     line = l.strip().split(";")
-                    gene = line[0]
+                    gene = line[0].split("_")[0]
                     genes_no = line[1:]
                     for e, file in enumerate(file_names):
                         stats[file][gene] = float(genes_no[e])
     return stats
 
+def read_cluser_mapping_to_uniprot(file_mapping):
+    result={}
+    with open(file_mapping) as f:
+        for line in f:
+            if qseqid not in line and line.strip():
+                split_line=line.split()
+                cluster_name=split_line[0].split(";")[0]
+                family=split_line[-2]
+                assigned_protein_id=split_line[-1]
+                if "|" in assigned_protein_id:
+                    assigned_protein_id=assigned_protein_id.split("|")[1]
+                if assigned_protein_id not in result:
+                    result[assigned_protein_id]=set()
+                result[assigned_protein_id].add(assigned_protein_id)
+    return result
 
+def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
+    new_gene_counts={}
+    clusters_info={}
+    for protein, clusters in clusters_mapping.items():
+        if len(clusters)>1:
+            gene_no=0
+            first_cluster=sorted(clusters)[0]
+            if first_cluster not in clusters_info:
+                clusters_info[first_cluster]={"proteins":set(), "clusters":set()}
+            clusters_info[first_cluster]["proteins"].add(protein)
+            clusters_info[first_cluster]["clusters"]=clusters
+
+            new_gene_counts[first_cluster]=0
+            for cl in clusters:
+                new_gene_counts[first_cluster]+=genes_counts[cl]
+        else:
+            new_gene_counts[clusters[0]]=genes_counts[clusters[0]]
+        pass
+    pass
+    
 def save_new_stats(merged_stats, out_file):
     file_list = list(merged_stats.keys())
     genes = set()
@@ -173,8 +208,11 @@ def save_corr_stats(corr, out_file):
 @click.option('--count_genes_file', default="./", help='File with count of genes.')
 @click.option('--count_metabolites_files', default="./", help='File with count of genes.')
 @click.option('--out_file', default="./", help='Out file with normalised genes statistics.')
-def count_corr(count_genes_file, out_file, count_metabolites_files):
+@click.option('--file_mapping', default="./comparison_ABC.csv", help='Out file with normalised genes statistics.')
+def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping):
     genes_counts = read_stats_file(count_genes_file)
+    clusters_mapping=read_cluser_mapping_to_uniprot(file_mapping)
+    genes_counts=read_cluser_mapping_to_uniprot(genes_counts, clusters_mapping)
     metabolites = read_metabolites(count_metabolites_files)
     genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
     new_metabo={}
