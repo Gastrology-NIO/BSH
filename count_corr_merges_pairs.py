@@ -223,9 +223,9 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
             f.write(";")
-            f.write(','.join([proteins_ids[i]["protein_name"] for i in clusters_info[datasets_info[1]]["proteins"])]))
+            f.write(','.join([proteins_ids[i]["protein_name"] for i in clusters_info[datasets_info[1]]["proteins"]]))
             f.write(";")
-            f.write(','.join([proteins_ids[i]["organism_name"] for i in clusters_info[datasets_info[1]]["proteins"])]))
+            f.write(','.join([proteins_ids[i]["organism_name"] for i in clusters_info[datasets_info[1]]["proteins"]]))
             f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
             #todo: dodać pident
