@@ -38,8 +38,8 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 if assigned_protein_id not in result:
                     result[assigned_protein_id]=set()
                 result[assigned_protein_id].add(cluster_name)
-                protein_ids[assigned_protein_id]={}
-    return result, protein_ids
+                proteins_ids[assigned_protein_id]={}
+    return result, proteins_ids
 
 def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
     new_gene_counts={}
