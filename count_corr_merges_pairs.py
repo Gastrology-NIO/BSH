@@ -17,7 +17,7 @@ def read_stats_file(count_genes_file):
                     stats = {i: {} for i in file_names}
                 else:
                     line = l.strip().split(";")
-                    gene = line[0].split("_")[0]
+                    gene = line[0].split("_")[1]
                     genes_no = line[1:]
                     for e, file in enumerate(file_names):
                         stats[file][gene] = float(genes_no[e])
