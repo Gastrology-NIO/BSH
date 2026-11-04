@@ -212,7 +212,7 @@ def save_corr_stats(corr, out_file):
 def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping):
     genes_counts = read_stats_file(count_genes_file)
     clusters_mapping=read_cluser_mapping_to_uniprot(file_mapping)
-    genes_counts, clusters_info=read_cluser_mapping_to_uniprot(genes_counts, clusters_mapping)
+    genes_counts, clusters_info=merge_clusters_based_on_mapping(genes_counts, clusters_mapping)
     metabolites = read_metabolites(count_metabolites_files)
     genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
     new_metabo={}
