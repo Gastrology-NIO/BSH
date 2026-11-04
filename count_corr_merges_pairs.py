@@ -34,9 +34,9 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 assigned_protein_id=split_line[-3]
                 if "|" in assigned_protein_id:
                     assigned_protein_id=assigned_protein_id.split("|")[1]
-                if assigned_protein_id not in result:
-                    result[assigned_protein_id]=set()
-                result[assigned_protein_id].add(assigned_protein_id)
+                if cluster_name not in result:
+                    result[cluster_name]=set()
+                result[cluster_name].add(assigned_protein_id)
     return result
 
 def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
