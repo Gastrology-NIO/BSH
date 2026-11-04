@@ -42,19 +42,21 @@ def read_cluser_mapping_to_uniprot(file_mapping):
 def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
     new_gene_counts={}
     clusters_info={}
-    for protein, clusters in clusters_mapping.items():
-        print(protein, clusters, list(genes_counts.keys())[0], genes_counts[list(genes_counts.keys())[0]])
-        clusters=list(clusters)
-        gene_no=0
-        first_cluster=sorted(clusters)[0]
-        if first_cluster not in clusters_info:
-            clusters_info[first_cluster]={"proteins":set(), "clusters":set()}
-        clusters_info[first_cluster]["proteins"].add(protein)
-        clusters_info[first_cluster]["clusters"]=clusters
-
-        new_gene_counts[first_cluster]=0
-        for cl in clusters:
-            new_gene_counts[first_cluster]+=genes_counts[cl]
+    for probe, genes_count in genes_counts.items():
+        new_gene_counts[probe]={}
+        for protein, clusters in clusters_mapping.items():
+            print(protein, clusters, list(genes_counts.keys())[0], genes_counts[list(genes_counts.keys())[0]])
+            clusters=list(clusters)
+            gene_no=0
+            first_cluster=sorted(clusters)[0]
+            if first_cluster not in clusters_info:
+                clusters_info[first_cluster]={"proteins":set(), "clusters":set()}
+            clusters_info[first_cluster]["proteins"].add(protein)
+            clusters_info[first_cluster]["clusters"]=clusters
+    
+            new_gene_counts[probe][first_cluster]=0
+            for cl in clusters:
+                new_gene_counts[probe][first_cluster]+=genes_counts[cl]
 
     return new_gene_counts, clusters_info
     
