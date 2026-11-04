@@ -27,7 +27,7 @@ def read_cluser_mapping_to_uniprot(file_mapping):
     result={}
     with open(file_mapping) as f:
         for line in f:
-            if qseqid not in line and line.strip():
+            if "qseqid" not in line and line.strip():
                 split_line=line.split()
                 cluster_name=split_line[0].split(";")[0]
                 family=split_line[-2]
