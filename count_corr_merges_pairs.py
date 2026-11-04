@@ -43,7 +43,7 @@ def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
     new_gene_counts={}
     clusters_info={}
     for protein, clusters in clusters_mapping.items():
-        print(protein, clusters)
+        print(protein, clusters, genes_counts.keys())
         clusters=list(clusters)
         gene_no=0
         first_cluster=sorted(clusters)[0]
