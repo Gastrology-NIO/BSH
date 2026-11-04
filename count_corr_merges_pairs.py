@@ -185,7 +185,7 @@ def count_pearson_corr(metabolites):
     return tests
 
 
-def save_corr_stats(corr, out_file):
+def save_corr_stats(corr, out_file, clusters_info):
     with open(out_file, "w") as f:
         f.write("metabolite;gene_name;corr_value;pval;metabo_list_values;gene_list_percentages\n")
         for datasets_info, datasets_data in corr.items():
@@ -198,11 +198,15 @@ def save_corr_stats(corr, out_file):
             f.write(str(datasets_data.get('qval_value', "nan")))
             f.write(";")
             f.write(str(datasets_data.get('qval_significance', "nan")))
+            f.write(";")
+            f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
+            f.write(";")
+            f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
 
-            f.write(";")
-            f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
-            f.write(";")
-            f.write(','.join([str(i) for i in datasets_data['gene_values']]))
+            # f.write(";")
+            # f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
+            # f.write(";")
+            # f.write(','.join([str(i) for i in datasets_data['gene_values']]))
             f.write("\n")
 
 
@@ -229,7 +233,7 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
     #print(genes_of_metabolites["S4358Nr1"])
     #print(genes_counts)
     corr = count_pearson_corr(genes_of_metabolites)
-    save_corr_stats(corr, out_file)
+    save_corr_stats(corr, out_file, clusters_info)
 
 
 if __name__ == "__main__":
