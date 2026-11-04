@@ -145,6 +145,7 @@ def count_pearson_corr(metabolites):
             log_cpm = np.log2(cpm+1)
             #print(metabolites_list, genes_no_list)
             metabolites = np.array(metabolites_list, dtype=float)
+            print(metabolite, metabolites)
             print("Min:", np.nanmin(metabolites))
             print("Max:", np.nanmax(metabolites))
             print("NaN:", np.isnan(metabolites).sum())
