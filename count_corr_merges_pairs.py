@@ -25,6 +25,7 @@ def read_stats_file(count_genes_file):
 
 def read_cluser_mapping_to_uniprot(file_mapping):
     result={}
+    proteins_ids={}
     with open(file_mapping) as f:
         for line in f:
             if "qseqid" not in line and line.strip():
@@ -37,7 +38,8 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 if assigned_protein_id not in result:
                     result[assigned_protein_id]=set()
                 result[assigned_protein_id].add(cluster_name)
-    return result
+                protein_ids[assigned_protein_id]={}
+    return result, protein_ids
 
 def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
     new_gene_counts={}
@@ -189,10 +191,25 @@ def count_pearson_corr(metabolites):
 
     return tests
 
+def get_protein_info(proteins_ids):
+    uniprot_accs=proteins_ids.keys()
+    
+    params = {
+        "query": "accession:(" + " OR ".join(list(uniprot_accs)) + ")",
+        "format": "tsv",
+        "fields": "accession,protein_name,organism_name",
+        "size": 500
+    }
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+    tsv_text=response.text
+    for line in tsv_text.split("\n"):
+        print(line)
+    return proteins_ids
 
-def save_corr_stats(corr, out_file, clusters_info):
+def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
     with open(out_file, "w") as f:
-        f.write("metabolite;gene_name;corr_value;pval;metabo_list_values;gene_list_percentages;representative protein name;similar gene clusters\n")
+        f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;similar gene clusters\n")
         for datasets_info, datasets_data in corr.items():
             f.write(';'.join([str(i) for i in list(datasets_info)]))
             f.write(";")
@@ -206,8 +223,12 @@ def save_corr_stats(corr, out_file, clusters_info):
             f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
             f.write(";")
+            f.write(','.join([proteins_ids[i]["protein_name"] for i in clusters_info[datasets_info[1]]["proteins"])]))
+            f.write(";")
+            f.write(','.join([proteins_ids[i]["organism_name"] for i in clusters_info[datasets_info[1]]["proteins"])]))
+            f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
-
+            #todo: dodać pident
             # f.write(";")
             # f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
             # f.write(";")
@@ -222,7 +243,8 @@ def save_corr_stats(corr, out_file, clusters_info):
 @click.option('--file_mapping', default="./comparison_ABC.csv", help='Out file with normalised genes statistics.')
 def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping):
     genes_counts = read_stats_file(count_genes_file)
-    clusters_mapping=read_cluser_mapping_to_uniprot(file_mapping)
+    clusters_mapping, protein_ids=read_cluser_mapping_to_uniprot(file_mapping)
+    proteins_ids=get_protein_info(protein_ids)
     genes_counts, clusters_info=merge_clusters_based_on_mapping(genes_counts, clusters_mapping)
     metabolites = read_metabolites(count_metabolites_files)
     genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
@@ -238,7 +260,7 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
     #print(genes_of_metabolites["S4358Nr1"])
     #print(genes_counts)
     corr = count_pearson_corr(genes_of_metabolites)
-    save_corr_stats(corr, out_file, clusters_info)
+    save_corr_stats(corr, out_file, clusters_info, proteins_ids)
 
 
 if __name__ == "__main__":
