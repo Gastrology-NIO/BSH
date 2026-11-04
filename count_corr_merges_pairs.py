@@ -176,13 +176,7 @@ def count_pearson_corr(metabolites):
             method='fdr_bh'
         )
         
-        for e, (p_val, gene_name) in enumerate(valid):
-            
-            print(tests)
-            print(valid)
-            print(tests[(metabolite, gene_name)])
-            print(pvals_corrected[e])
-            print( reject[e])
+        for e, (gene_name, p_val) in enumerate(valid):
             tests[(metabolite, gene_name)]["qval_value"] = pvals_corrected[e]
             tests[(metabolite, gene_name)]["qval_significance"] = reject[e]
 
