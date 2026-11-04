@@ -160,7 +160,7 @@ def count_pearson_corr(metabolites):
         # usunięcie nanów
         valid = []
         
-        for p, g in p_val_list:
+        for g, p in p_val_list:
             try:
                 p = float(p)
                 if not np.isnan(p):
