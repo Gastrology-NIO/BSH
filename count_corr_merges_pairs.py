@@ -145,7 +145,11 @@ def count_pearson_corr(metabolites):
             log_cpm = np.log2(cpm+1)
             #print(metabolites_list, genes_no_list)
             metabolites = np.array(metabolites_list, dtype=float)
-
+            print("Min:", np.nanmin(metabolites))
+            print("Max:", np.nanmax(metabolites))
+            print("NaN:", np.isnan(metabolites).sum())
+            print("Inf:", np.isinf(metabolites).sum())
+            print("Negative:", (metabolites < 0).sum())
             metabolites=np.log2(metabolites+1)
             correlation = spearmanr(metabolites, log_cpm)
             tests[(metabolite, gene_name)] = {"metabo_values": metabolites_list, "gene_values": genes_no_list,
