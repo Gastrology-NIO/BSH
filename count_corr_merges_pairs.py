@@ -166,6 +166,7 @@ def count_pearson_corr(metabolites):
                 if not np.isnan(p):
                     valid.append((p, g))
             except (ValueError, TypeError):
+                print("not valid")
                 continue        
         pvals_valid = [x[0] for x in valid]
         
@@ -176,6 +177,9 @@ def count_pearson_corr(metabolites):
         )
         
         for e, (p_val, gene_name) in enumerate(valid):
+            
+            print(tests)
+            print(valid)
             print(tests[(metabolite, gene_name)])
             print(pvals_corrected[e])
             print( reject[e])
