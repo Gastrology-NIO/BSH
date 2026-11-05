@@ -256,7 +256,7 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
             f.write(";")
             f.write(str(clusters_info[datasets_info[1]].get("pident_blast", "del")))
-            #todo: dodać pident
+            f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
             # f.write(";")
             # f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
             # f.write(";")
