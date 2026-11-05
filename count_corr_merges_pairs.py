@@ -240,7 +240,7 @@ def get_protein_info(proteins_ids, batch_size=10):
 
 def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
     with open(out_file, "w") as f:
-        f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;pident_blast; pident_bsh;family;similar gene clusters\n")
+        f.write("metabolite|gene_name|corr_value|pval|qval_value|qval_significance|representative protein UniprotAcc|Protein name|Organism name|pident_max|pident_bsh|family|similar gene clusters\n")
         for datasets_info, datasets_data in corr.items():
             f.write('|'.join([str(i) for i in list(datasets_info)]))
             f.write("|")
