@@ -40,7 +40,7 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 if assigned_protein_id not in result:
                     result[assigned_protein_id]=set()
                 result[assigned_protein_id].add(cluster_name)
-                proteins_ids[assigned_protein_id]={"pident_BSH":pident}
+                proteins_ids[assigned_protein_id]={"pident_BSH":pident, "family":family}
     return result, proteins_ids
 
 def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
@@ -234,7 +234,7 @@ def get_protein_info(proteins_ids, batch_size=10):
 
 def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
     with open(out_file, "w") as f:
-        f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;pident_blast; pident_bsh;similar gene clusters\n")
+        f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;pident_blast; pident_bsh;family;similar gene clusters\n")
         for datasets_info, datasets_data in corr.items():
             f.write(';'.join([str(i) for i in list(datasets_info)]))
             f.write(";")
@@ -254,6 +254,8 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(','.join([proteins_ids[i].get("organism_name", "deleted") for i in proteins]))
             f.write(";")
             f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
+            f.write(";")
+            f.write(','.join([proteins_ids[i].get("family", "deleted") for i in proteins]))
             f.write(";")
             f.write(str(clusters_info[datasets_info[1]].get("pident_blast", "del")))
             f.write(";")
