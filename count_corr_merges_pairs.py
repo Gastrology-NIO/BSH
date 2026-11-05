@@ -220,11 +220,12 @@ def get_protein_info(proteins_ids, batch_size=50):
         lines = response.text.strip().splitlines()
 
         for line in lines[1:]:
-            print(line)
-            accession, protein_name, organism_name = line.split("\t")
-
-            proteins_ids[accession]["protein_name"] = protein_name
-            proteins_ids[accession]["organism_name"] = organism_name
+            if "deleted" not in line:
+                print(line)
+                accession, protein_name, organism_name = line.split("\t")
+    
+                proteins_ids[accession]["protein_name"] = protein_name
+                proteins_ids[accession]["organism_name"] = organism_name
 
     return proteins_ids
 
@@ -244,9 +245,9 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
             f.write(";")
-            f.write(','.join([proteins_ids[i]["protein_name"] for i in clusters_info[datasets_info[1]]["proteins"]]))
+            f.write(','.join([proteins_ids[i].get("protein_name", "deleted") for i in clusters_info[datasets_info[1]]["proteins"]]))
             f.write(";")
-            f.write(','.join([proteins_ids[i]["organism_name"] for i in clusters_info[datasets_info[1]]["proteins"]]))
+            f.write(','.join([proteins_ids[i].get("organism_name", "deleted) for i in clusters_info[datasets_info[1]]["proteins"]]))
             f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
             #todo: dodać pident
