@@ -37,7 +37,7 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 # if len(split_line)==15:
                 #     pident=split_line[2]
                 # else:
-                pident=split_line[4]
+                pident=max([float(i) for i in split_line[4:6] if i])
                 print(len(split_line))
                 if "|" in assigned_protein_id:
                     assigned_protein_id=assigned_protein_id.split("|")[1]
