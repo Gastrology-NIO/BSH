@@ -37,7 +37,7 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 # if len(split_line)==15:
                 #     pident=split_line[2]
                 # else:
-                pident=[float(i) for i in split_line[4:6] if i]
+                pident=[float(i) for i in split_line[4:7] if i]
                 print(cluster_name, pident)
                 pident=max(pident)
                 print(len(split_line))
