@@ -263,14 +263,21 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             # f.write(','.join([str(i) for i in datasets_data['gene_values']]))
             f.write("\n")
 
-def read_blast_stats(bsh_stats, protein_ids):
+def read_blast_stats(bsh_stats, corr):
     with open(bsh_stats) as f:
         for line in f:
             if line.strip():
                 line_split=line.split("\t")
                 uniprot=line_split[1].split("|")[1]
                 pident=line_split[3]
-                protein_ids[uniprot]["pident_blast"]=pident
+                for datasets_info, datasets_data in corr.items()
+                    if uniprot in clusters_info[datasets_info[1]]["proteins"]:
+                        if "pident_blast" not in clusters_info[datasets_info[1]]:
+                            clusters_info[datasets_info[1]]["pident_blast"]=float(pident)
+                        elif clusters_info[datasets_info[1]]["pident_blast"]<float(pident):
+                            clusters_info[datasets_info[1]]["pident_blast"]=float(pident)
+                            
+                        
     return(protein_ids)
     pass
 @click.command()
@@ -284,7 +291,6 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
     genes_counts = read_stats_file(count_genes_file)
     clusters_mapping, protein_ids=read_cluser_mapping_to_uniprot(file_mapping)
     proteins_ids=get_protein_info(protein_ids)
-    proteins_ids=read_blast_stats(bsh_stats, proteins_ids)
     genes_counts, clusters_info=merge_clusters_based_on_mapping(genes_counts, clusters_mapping)
     metabolites = read_metabolites(count_metabolites_files)
     genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
@@ -294,6 +300,8 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
             #print(metabo_data.keys())
             new_metabo[file]=metabo_data
     genes_of_metabolites=new_metabo
+    corr=read_blast_stats(bsh_stats, corr)
+    
     #input()
     #genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
     #print(genes_of_metabolites.keys())
