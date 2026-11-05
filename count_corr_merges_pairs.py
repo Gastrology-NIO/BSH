@@ -234,7 +234,7 @@ def get_protein_info(proteins_ids, batch_size=10):
 
 def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
     with open(out_file, "w") as f:
-        f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;similar gene clusters\n")
+        f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;pident_blast; pident_bsh;similar gene clusters\n")
         for datasets_info, datasets_data in corr.items():
             f.write(';'.join([str(i) for i in list(datasets_info)]))
             f.write(";")
@@ -255,7 +255,9 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(";")
             f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
             f.write(";")
-            f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
+            f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
+            f.write(";")
+            f.write(str(clusters_info[datasets_info[1]]["clusters_info"]))
             #todo: dodać pident
             # f.write(";")
             # f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
@@ -278,7 +280,7 @@ def read_blast_stats(bsh_stats, corr):
                             clusters_info[datasets_info[1]]["pident_blast"]=float(pident)
                             
                         
-    return(protein_ids)
+    return(corr)
     pass
 @click.command()
 @click.option('--count_genes_file', default="./", help='File with count of genes.')
