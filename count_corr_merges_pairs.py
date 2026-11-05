@@ -302,6 +302,7 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
             #print(metabo_data.keys())
             new_metabo[file]=metabo_data
     genes_of_metabolites=new_metabo
+    corr = count_pearson_corr(genes_of_metabolites)
     corr=read_blast_stats(bsh_stats, corr)
     
     #input()
@@ -309,7 +310,7 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
     #print(genes_of_metabolites.keys())
     #print(genes_of_metabolites["S4358Nr1"])
     #print(genes_counts)
-    corr = count_pearson_corr(genes_of_metabolites)
+    
     save_corr_stats(corr, out_file, clusters_info, proteins_ids)
 
 
