@@ -37,7 +37,9 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 # if len(split_line)==15:
                 #     pident=split_line[2]
                 # else:
-                pident=max([float(i) for i in split_line[4:6] if i])
+                pident=[float(i) for i in split_line[4:6] if i]
+                print(cluster_name, pident)
+                pident=max(pident)
                 print(len(split_line))
                 if "|" in assigned_protein_id:
                     assigned_protein_id=assigned_protein_id.split("|")[1]
@@ -240,30 +242,29 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
     with open(out_file, "w") as f:
         f.write("metabolite;gene_name;corr_value;pval;qval_value;qval_significance;representative protein UniprotAcc;Protein name; Organism name;pident_blast; pident_bsh;family;similar gene clusters\n")
         for datasets_info, datasets_data in corr.items():
-            f.write(';'.join([str(i) for i in list(datasets_info)]))
-            f.write(";")
+            f.write('|'.join([str(i) for i in list(datasets_info)]))
+            f.write("|")
             f.write(str(datasets_data['corr_value']))
-            f.write(";")
+            f.write("|")
             f.write(str(datasets_data['pval']))
-            f.write(";")
+            f.write("|")
             f.write(str(datasets_data.get('qval_value', "nan")))
-            f.write(";")
+            f.write("|")
             f.write(str(datasets_data.get('qval_significance', "nan")))
-            f.write(";")
+            f.write("|")
             f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
             proteins=clusters_info[datasets_info[1]]["proteins"]
-            f.write(";")
+            f.write("|")
             f.write(','.join([proteins_ids[i].get("protein_name", "deleted") for i in proteins]))
-            f.write(";")
+            f.write("|")
             f.write(','.join([proteins_ids[i].get("organism_name", "deleted") for i in proteins]))
-            f.write(";")
+            f.write("|")
             f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
-            f.write(";")
+            f.write("|")
             f.write(','.join([proteins_ids[i].get("family", "deleted") for i in proteins]))
-            f.write(";")
+            f.write("|")
             f.write(str(clusters_info[datasets_info[1]].get("pident_blast", "del")))
-            f.write(";")
-
+            f.write("|")
             f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
             # f.write(";")
             # f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
