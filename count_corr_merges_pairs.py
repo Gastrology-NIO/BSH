@@ -270,7 +270,7 @@ def read_blast_stats(bsh_stats, corr):
                 line_split=line.split("\t")
                 uniprot=line_split[1].split("|")[1]
                 pident=line_split[3]
-                for datasets_info, datasets_data in corr.items()
+                for datasets_info, datasets_data in corr.items():
                     if uniprot in clusters_info[datasets_info[1]]["proteins"]:
                         if "pident_blast" not in clusters_info[datasets_info[1]]:
                             clusters_info[datasets_info[1]]["pident_blast"]=float(pident)
