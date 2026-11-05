@@ -197,11 +197,13 @@ import requests
 def get_protein_info(proteins_ids, batch_size=10):
 
     uniprot_accs = list(proteins_ids.keys())
+    
     url = "https://rest.uniprot.org/uniprotkb/search"
 
     for i in range(0, len(uniprot_accs), batch_size):
 
         batch = uniprot_accs[i:i + batch_size]
+        batch=[i for i in batch if i!="BSH"]
 
         params = {
             "query": "accession:(" + " OR ".join(batch) + ")",
