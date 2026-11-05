@@ -259,7 +259,7 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write("|")
             f.write(','.join([proteins_ids[i].get("organism_name", "deleted") for i in proteins]))
             f.write("|")
-            f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
+            f.write(','.join([str(proteins_ids[i].get("pident_BSH", "deleted")) for i in proteins]))
             f.write("|")
             f.write(','.join([proteins_ids[i].get("family", "deleted") for i in proteins]))
             f.write("|")
