@@ -255,11 +255,7 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(";")
             f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
             f.write(";")
-            f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
-            f.write(";")
-            f.write(",".join(clusters_info[datasets_info[1]].get("pident_blast", "del")))
-            f.write(";")
-            f.write(str(clusters_info[datasets_info[1]]["clusters_info"]))
+            f.write(str(clusters_info[datasets_info[1]].get("pident_blast", "del")))
             #todo: dodać pident
             # f.write(";")
             # f.write(','.join([str(i) for i in datasets_data['metabo_values']]))
@@ -276,11 +272,11 @@ def read_blast_stats(bsh_stats, clusters_info):
                 uniprot=line_split[1].split("|")[1]
                 pident=line_split[3]
                 if cluster_no in clusters_info:
-                    if uniprot in clusters_info[cl_no]["proteins"]:
-                        if "pident_blast" not in clusters_info[cl_no]:
-                            clusters_info[cl_no]["pident_blast"]=float(pident)
-                        elif clusters_info[cl_no]["pident_blast"]<float(pident):
-                            clusters_info[cl_no]["pident_blast"]=float(pident) 
+                    if uniprot in clusters_info[cluster_no]["proteins"]:
+                        if "pident_blast" not in clusters_info[cluster_no]:
+                            clusters_info[cluster_no]["pident_blast"]=float(pident)
+                        elif clusters_info[cluster_no]["pident_blast"]<float(pident):
+                            clusters_info[cluster_no]["pident_blast"]=float(pident) 
     return(clusters_info)
     
 @click.command()
