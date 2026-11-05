@@ -34,12 +34,13 @@ def read_cluser_mapping_to_uniprot(file_mapping):
                 cluster_name=split_line[0].split(";")[0]
                 family=split_line[-4]
                 assigned_protein_id=split_line[-3]
+                pident=split_line[4]
                 if "|" in assigned_protein_id:
                     assigned_protein_id=assigned_protein_id.split("|")[1]
                 if assigned_protein_id not in result:
                     result[assigned_protein_id]=set()
                 result[assigned_protein_id].add(cluster_name)
-                proteins_ids[assigned_protein_id]={}
+                proteins_ids[assigned_protein_id]={"pident_BSH":pident}
     return result, proteins_ids
 
 def merge_clusters_based_on_mapping(genes_counts, clusters_mapping):
@@ -252,6 +253,8 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(";")
             f.write(','.join([proteins_ids[i].get("organism_name", "deleted") for i in proteins]))
             f.write(";")
+            f.write(','.join([proteins_ids[i].get("pident_BSH", "deleted") for i in proteins]))
+            f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["clusters"]))
             #todo: dodać pident
             # f.write(";")
@@ -260,16 +263,28 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             # f.write(','.join([str(i) for i in datasets_data['gene_values']]))
             f.write("\n")
 
-
+def read_blast_stats(bsh_stats, protein_ids):
+    with open(bsh_stats) as f:
+        for line in f:
+            if line.strip():
+                line_split=line.split("\t")
+                uniprot=line_split[1].split("|")[1]
+                pident=line_split[3]
+                protein_ids[uniprot]["pident_blast"]=pident
+    return(protein_ids)
+    pass
 @click.command()
 @click.option('--count_genes_file', default="./", help='File with count of genes.')
 @click.option('--count_metabolites_files', default="./", help='File with count of genes.')
 @click.option('--out_file', default="./", help='Out file with normalised genes statistics.')
 @click.option('--file_mapping', default="./comparison_ABC.csv", help='Out file with normalised genes statistics.')
-def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping):
+@click.option('--bsh_stats', default="./", help='File with count of genes.')
+
+def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping, bsh_stats):
     genes_counts = read_stats_file(count_genes_file)
     clusters_mapping, protein_ids=read_cluser_mapping_to_uniprot(file_mapping)
     proteins_ids=get_protein_info(protein_ids)
+    proteins_ids=read_blast_stats(bsh_stats, proteins_ids)
     genes_counts, clusters_info=merge_clusters_based_on_mapping(genes_counts, clusters_mapping)
     metabolites = read_metabolites(count_metabolites_files)
     genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
