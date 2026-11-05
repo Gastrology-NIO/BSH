@@ -192,21 +192,39 @@ def count_pearson_corr(metabolites):
 
     return tests
 
-def get_protein_info(proteins_ids):
-    uniprot_accs=proteins_ids.keys()
+import requests
+
+def get_protein_info(proteins_ids, batch_size=50):
+
+    uniprot_accs = list(proteins_ids.keys())
     url = "https://rest.uniprot.org/uniprotkb/search"
 
-    params = {
-        "query": "accession:(" + " OR ".join(list(uniprot_accs)) + ")",
-        "format": "tsv",
-        "fields": "accession,protein_name,organism_name",
-        "size": 500
-    }
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    tsv_text=response.text
-    for line in tsv_text.split("\n"):
-        print(line)
+    for i in range(0, len(uniprot_accs), batch_size):
+
+        batch = uniprot_accs[i:i + batch_size]
+
+        params = {
+            "query": "accession:(" + " OR ".join(batch) + ")",
+            "format": "tsv",
+            "fields": "accession,protein_name,organism_name",
+            "size": 500
+        }
+
+        response = requests.get(url, params=params, timeout=120)
+
+        if not response.ok:
+            print(f"Error in batch {i // batch_size + 1}")
+            print(response.text)
+            response.raise_for_status()
+
+        lines = response.text.strip().splitlines()
+
+        for line in lines[1:]:
+            accession, protein_name, organism_name = line.split("\t")
+
+            proteins_ids[accession]["protein_name"] = protein_name
+            proteins_ids[accession]["organism_name"] = organism_name
+
     return proteins_ids
 
 def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
