@@ -30,14 +30,14 @@ def read_cluser_mapping_to_uniprot(file_mapping):
     with open(file_mapping) as f:
         for line in f:
             if "qseqid" not in line and line.strip():
-                split_line=line.split()
+                split_line=line.split("\t")
                 cluster_name=split_line[0].split(";")[0]
                 family=split_line[-4]
                 assigned_protein_id=split_line[-3]
-                if len(split_line)==15:
-                    pident=split_line[2]
-                else:
-                    pident=split_line[4]
+                # if len(split_line)==15:
+                #     pident=split_line[2]
+                # else:
+                pident=split_line[4]
                 print(len(split_line))
                 if "|" in assigned_protein_id:
                     assigned_protein_id=assigned_protein_id.split("|")[1]
