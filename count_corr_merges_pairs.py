@@ -220,6 +220,7 @@ def get_protein_info(proteins_ids, batch_size=50):
         lines = response.text.strip().splitlines()
 
         for line in lines[1:]:
+            print(line)
             accession, protein_name, organism_name = line.split("\t")
 
             proteins_ids[accession]["protein_name"] = protein_name
