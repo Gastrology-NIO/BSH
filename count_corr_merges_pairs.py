@@ -257,6 +257,8 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             f.write(";")
             f.write(",".join(clusters_info[datasets_info[1]]["proteins"]))
             f.write(";")
+            f.write(",".join(clusters_info[datasets_info[1]].get("pident_blast", "del")))
+            f.write(";")
             f.write(str(clusters_info[datasets_info[1]]["clusters_info"]))
             #todo: dodać pident
             # f.write(";")
@@ -265,23 +267,22 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             # f.write(','.join([str(i) for i in datasets_data['gene_values']]))
             f.write("\n")
 
-def read_blast_stats(bsh_stats, corr, clusters_info):
+def read_blast_stats(bsh_stats, clusters_info):
     with open(bsh_stats) as f:
         for line in f:
             if line.strip():
                 line_split=line.split("\t")
+                cluster_no=line_split[0].split(";")[0]
                 uniprot=line_split[1].split("|")[1]
                 pident=line_split[3]
-                for datasets_info, datasets_data in corr.items():
-                    if uniprot in clusters_info[datasets_info[1]]["proteins"]:
-                        if "pident_blast" not in clusters_info[datasets_info[1]]:
-                            clusters_info[datasets_info[1]]["pident_blast"]=float(pident)
-                        elif clusters_info[datasets_info[1]]["pident_blast"]<float(pident):
-                            clusters_info[datasets_info[1]]["pident_blast"]=float(pident)
-                            
-                        
-    return(corr)
-    pass
+                if cluster_no in clusters_info:
+                    if uniprot in clusters_info[cl_no]["proteins"]:
+                        if "pident_blast" not in clusters_info[cl_no]:
+                            clusters_info[cl_no]["pident_blast"]=float(pident)
+                        elif clusters_info[cl_no]["pident_blast"]<float(pident):
+                            clusters_info[cl_no]["pident_blast"]=float(pident) 
+    return(clusters_info)
+    
 @click.command()
 @click.option('--count_genes_file', default="./", help='File with count of genes.')
 @click.option('--count_metabolites_files', default="./", help='File with count of genes.')
@@ -303,7 +304,7 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
             new_metabo[file]=metabo_data
     genes_of_metabolites=new_metabo
     corr = count_pearson_corr(genes_of_metabolites)
-    corr=read_blast_stats(bsh_stats, corr, clusters_info)
+    clusters_info=read_blast_stats(bsh_stats, clusters_info)
     
     #input()
     #genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
