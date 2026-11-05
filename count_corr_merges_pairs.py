@@ -265,7 +265,7 @@ def save_corr_stats(corr, out_file, clusters_info, proteins_ids):
             # f.write(','.join([str(i) for i in datasets_data['gene_values']]))
             f.write("\n")
 
-def read_blast_stats(bsh_stats, corr):
+def read_blast_stats(bsh_stats, corr, clusters_info):
     with open(bsh_stats) as f:
         for line in f:
             if line.strip():
@@ -303,7 +303,7 @@ def count_corr(count_genes_file, out_file, count_metabolites_files, file_mapping
             new_metabo[file]=metabo_data
     genes_of_metabolites=new_metabo
     corr = count_pearson_corr(genes_of_metabolites)
-    corr=read_blast_stats(bsh_stats, corr)
+    corr=read_blast_stats(bsh_stats, corr, clusters_info)
     
     #input()
     #genes_of_metabolites = select_files_of_metabolites(genes_counts, metabolites)
